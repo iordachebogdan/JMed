@@ -19,13 +19,13 @@ public class CaseService {
         cases = new TreeMap<>();
     }
 
-    public CaseService getInstance() {
+    public static CaseService getInstance() {
         if (instance == null)
             instance = new CaseService();
         return instance;
     }
 
-    int addCase(Patient patient) {
+    public int addCase(Patient patient) {
         if (patient.getPersonalMedic() == null)
             throw new IllegalArgumentException("No personal medic assigned");
         currentId++;
@@ -33,7 +33,7 @@ public class CaseService {
         return currentId;
     }
 
-    Case getCaseById(int id) {
+    public Case getCaseById(int id) {
         return cases.getOrDefault(id, null);
     }
 }

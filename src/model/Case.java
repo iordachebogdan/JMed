@@ -54,7 +54,15 @@ public class Case {
         return patient;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
     public void setCompleted() {
         completed = true;
+    }
+
+    public int getId() {
+        return id;
     }
 }

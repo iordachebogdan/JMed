@@ -6,7 +6,7 @@ public class Prescription implements Snapshotable<Medication> {
     private Set<Medication> medicationSet;
     private List<Event<Medication>> events;
 
-    public Prescription() {
+    Prescription() {
         medicationSet = new HashSet<>();
         events = new ArrayList<>();
     }
@@ -27,6 +27,7 @@ public class Prescription implements Snapshotable<Medication> {
 
     @Override
     public List<Medication> getBeforeDate(Date date) {
+        Collections.sort(events);
         Set<Medication> querySet = new HashSet<>();
         for (Event<Medication> event : events) {
             if (event.getDate().before(date)) {

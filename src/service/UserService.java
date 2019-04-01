@@ -29,7 +29,7 @@ public class UserService {
         currentId++;
         if (type == UserTypeEnum.MEDIC)
             users.put(username, new Medic(currentId, username, AuthenticationService.hashFunction(password),
-                    userDetails, null));
+                    userDetails));
         else
             users.put(username, new Patient(currentId, username, AuthenticationService.hashFunction(password),
                     userDetails));

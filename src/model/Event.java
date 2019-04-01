@@ -2,7 +2,7 @@ package model;
 
 import java.util.Date;
 
-public class Event<T> {
+public class Event<T> implements Comparable<Event<T>> {
     public enum EventTypeEnum {
         ADD, REMOVE
     }
@@ -11,21 +11,30 @@ public class Event<T> {
     private final T item;
     private final Date date;
 
-    public Event(EventTypeEnum type, T item, Date date) {
+    Event(EventTypeEnum type, T item, Date date) {
         this.type = type;
         this.item = item;
         this.date = date;
     }
 
-    public T getItem() {
+    T getItem() {
         return item;
     }
 
-    public EventTypeEnum getType() {
+    EventTypeEnum getType() {
         return type;
     }
 
-    public Date getDate() {
+    Date getDate() {
         return date;
+    }
+
+    @Override
+    public int compareTo(Event<T> o) {
+        if (this.date.before(o.date))
+            return -1;
+        if (this.date.after(o.date))
+            return 1;
+        return 0;
     }
 }

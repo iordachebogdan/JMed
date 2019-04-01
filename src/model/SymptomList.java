@@ -6,7 +6,7 @@ public class SymptomList implements Snapshotable<Symptom> {
     private Set<Symptom> symptomSet;
     private List<Event<Symptom>> events;
 
-    public SymptomList() {
+    SymptomList() {
         symptomSet = new HashSet<>();
         events = new ArrayList<>();
     }
@@ -27,6 +27,7 @@ public class SymptomList implements Snapshotable<Symptom> {
 
     @Override
     public List<Symptom> getBeforeDate(Date date) {
+        Collections.sort(events);
         Set<Symptom> querySet = new HashSet<>();
         for (Event<Symptom> event : events) {
             if (event.getDate().before(date)) {

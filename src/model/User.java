@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class User implements Authenticable {
     private int id;
     private String username;
@@ -7,11 +10,14 @@ public abstract class User implements Authenticable {
     private UserDetails userDetails;
     private String token;
 
+    private List<Case> cases;
+
     public User(int id, String username, String hashPassword, UserDetails userDetails) {
         this.id = id;
         this.username = username;
         this.hashPassword = hashPassword;
         this.userDetails = userDetails;
+        this.cases = new ArrayList<>();
     }
 
     public abstract UserTypeEnum getType();
@@ -43,5 +49,13 @@ public abstract class User implements Authenticable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    void addCase(Case c) {
+        cases.add(c);
+    }
+
+    public List<Case> getAssignedCases() {
+        return cases;
     }
 }

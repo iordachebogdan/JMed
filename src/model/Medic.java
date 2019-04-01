@@ -6,14 +6,11 @@ import java.util.List;
 public class Medic extends User {
     private List<Specialization> specializations;
     private List<Patient> patients;
-    private List<Case> cases;
 
-    public Medic(int id, String username, String hashPassword, UserDetails userDetails,
-                 List<Specialization> specializations) {
+    public Medic(int id, String username, String hashPassword, UserDetails userDetails) {
         super(id, username, hashPassword, userDetails);
-        this.specializations = specializations;
+        this.specializations = new ArrayList<>();
         this.patients = new ArrayList<>();
-        this.cases = new ArrayList<>();
     }
 
     public void addSpecialization(Specialization s) {
@@ -34,14 +31,6 @@ public class Medic extends User {
 
     public void removePatient(Patient p) {
         patients.remove(p);
-    }
-
-    public void addCase(Case c) {
-        cases.add(c);
-    }
-
-    public List<Case> getAssignedCases() {
-        return cases;
     }
 
     @Override

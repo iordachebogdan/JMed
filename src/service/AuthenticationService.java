@@ -61,5 +61,7 @@ public class AuthenticationService {
         tokenTable.remove(token);
     }
 
-
+    public User findUserByToken(String token) {
+        return tokenTable.get(token);
+    }
 }
