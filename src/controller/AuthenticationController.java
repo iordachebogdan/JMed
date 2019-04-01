@@ -14,7 +14,7 @@ public class AuthenticationController {
     //singleton pattern
     private AuthenticationController() {}
 
-    public AuthenticationController getInstance() {
+    public static AuthenticationController getInstance() {
         if (instance == null)
             instance = new AuthenticationController();
         return instance;
@@ -39,8 +39,8 @@ public class AuthenticationController {
         return token;
     }
 
-    public void logOutUser(int userId, String token) {
-        User user = UserService.getInstance().getUserById(userId);
+    public void logOutUser(String token) {
+        User user = AuthenticationService.getInstance().findUserByToken(token);
         if (user == null)
             return;
         AuthenticationService.getInstance().logOutUser(user, token);

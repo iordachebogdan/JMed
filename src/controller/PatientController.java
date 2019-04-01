@@ -33,6 +33,13 @@ public class PatientController {
         return (patient == requester || requester instanceof Medic);
     }
 
+    public PatientData getPatientPersonalData(String token) throws NotAuthorizedException {
+        User patient = AuthenticationService.getInstance().findUserByToken(token);
+        if (!(patient instanceof Patient))
+            throw new NotAuthorizedException("Invalid token");
+        return new PatientData((Patient)patient);
+    }
+
     public PatientData getPatientById(int id, String token) throws NotAuthorizedException {
         if (!isAuthorizedToViewPatient(id, token))
             throw new NotAuthorizedException("Invalid token");

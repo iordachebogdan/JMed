@@ -33,6 +33,28 @@ public class CaseController {
             throw new NotAuthorizedException("Not permitted");
     }
 
+    private void checkAuthorizationSymptoms(String token, int caseId) throws NotAuthorizedException {
+        User patient = AuthenticationService.getInstance().findUserByToken(token);
+        if (!(patient instanceof Patient))
+            throw new IllegalArgumentException("No such patient");
+        Case c = CaseService.getInstance().getCaseById(caseId);
+        if (c == null)
+            throw new IllegalArgumentException("No such case");
+        if (c.getPatient() != patient)
+            throw new NotAuthorizedException("Invalid token");
+    }
+
+    private void checkAuthorizationMedication(String token, int caseId) throws NotAuthorizedException {
+        User medic = AuthenticationService.getInstance().findUserByToken(token);
+        if (!(medic instanceof Medic))
+            throw new IllegalArgumentException("No such patient");
+        Case c = CaseService.getInstance().getCaseById(caseId);
+        if (c == null)
+            throw new IllegalArgumentException("No such case");
+        if (c.getOwnerMedic() != medic && !c.getOtherMedics().contains(medic))
+            throw new NotAuthorizedException("Invalid token");
+    }
+
     public CaseData getCaseById(String token, int caseId) throws NotAuthorizedException {
         checkAuthorization(token, caseId);
         Case c = CaseService.getInstance().getCaseById(caseId);
@@ -48,28 +70,30 @@ public class CaseController {
     }
 
     public CaseData addSymptom(String token, int caseId, Symptom symptom) throws NotAuthorizedException {
-        User patient = AuthenticationService.getInstance().findUserByToken(token);
-        if (!(patient instanceof Patient))
-            throw new IllegalArgumentException("No such patient");
+        checkAuthorizationSymptoms(token, caseId);
         Case c = CaseService.getInstance().getCaseById(caseId);
-        if (c == null)
-            throw new IllegalArgumentException("No such case");
-        if (c.getPatient() != patient)
-            throw new NotAuthorizedException("Invalid token");
         c.getSymptomList().addSymptom(symptom);
         return new CaseData(c);
     }
 
-    public CaseData addMedication(String token, int caseId, Medication medication) throws NotAuthorizedException {
-        User medic = AuthenticationService.getInstance().findUserByToken(token);
-        if (!(medic instanceof Medic))
-            throw new IllegalArgumentException("No such patient");
+    public CaseData removeSymptom(String token, int caseId, Symptom symptom) throws NotAuthorizedException {
+        checkAuthorizationSymptoms(token, caseId);
         Case c = CaseService.getInstance().getCaseById(caseId);
-        if (c == null)
-            throw new IllegalArgumentException("No such case");
-        if (c.getOwnerMedic() != medic && !c.getOtherMedics().contains(medic))
-            throw new NotAuthorizedException("Invalid token");
+        c.getSymptomList().removeSymptom(symptom);
+        return new CaseData(c);
+    }
+
+    public CaseData addMedication(String token, int caseId, Medication medication) throws NotAuthorizedException {
+        checkAuthorizationMedication(token, caseId);
+        Case c = CaseService.getInstance().getCaseById(caseId);
         c.getPrescription().addMedication(medication);
+        return new CaseData(c);
+    }
+
+    public CaseData removeMedication(String token, int caseId, Medication medication) throws NotAuthorizedException {
+        checkAuthorizationMedication(token, caseId);
+        Case c = CaseService.getInstance().getCaseById(caseId);
+        c.getPrescription().removeMedication(medication);
         return new CaseData(c);
     }
 
@@ -98,4 +122,13 @@ public class CaseController {
         Case c = CaseService.getInstance().getCaseById(caseId);
         return c.getPrescription().getBeforeDate(date);
     }
+
+    public void setCompleted(String token, int caseId) throws NotAuthorizedException {
+        Case c = CaseService.getInstance().getCaseById(caseId);
+        User medic = AuthenticationService.getInstance().findUserByToken(token);
+        if (c == null || !(medic instanceof Medic) || c.getOwnerMedic() != medic)
+            throw new NotAuthorizedException("Invalid token");
+        c.setCompleted();
+    }
+
 }

@@ -80,4 +80,12 @@ public class MedicController {
                 .map(Case::getId)
                 .collect(Collectors.toList());
     }
+
+    public void addSpecialization(String token, Specialization specialization) throws NotAuthorizedException {
+        User medic = AuthenticationService.getInstance().findUserByToken(token);
+        if (!(medic instanceof Medic))
+            throw new NotAuthorizedException("Invalid token");
+        if (!((Medic) medic).getSpecializations().contains(specialization))
+            ((Medic) medic).getSpecializations().add(specialization);
+    }
 }
