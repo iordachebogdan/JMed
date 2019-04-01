@@ -1,10 +1,11 @@
 package model;
 
-public abstract class User {
+public abstract class User implements Authenticable {
     private int id;
     private String username;
     private String hashPassword;
     private UserDetails userDetails;
+    private String token;
 
     public User(int id, String username, String hashPassword, UserDetails userDetails) {
         this.id = id;
@@ -33,5 +34,14 @@ public abstract class User {
 
     public UserDetails getUserDetails() {
         return userDetails;
+    }
+
+    @Override
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Case {
+    private int id;
     private Patient patient;
     private Medic ownerMedic;
     private List<Medic> otherMedics;
@@ -13,7 +14,8 @@ public class Case {
 
     private boolean completed;
 
-    public Case(Patient patient) {
+    public Case(int id, Patient patient) {
+        this.id = id;
         this.patient = patient;
         this.ownerMedic = patient.getPersonalMedic();
         this.otherMedics = new ArrayList<>();
