@@ -103,5 +103,8 @@ public class Main {
 
         caseController.setCompleted(token5, 1);
         System.out.println(caseController.getCaseById(token2, 1).isCompleted());
+
+        authenticationController.logOutUser(token1);
+//        patientController.getPatientPersonalData(token1);
     }
 }
