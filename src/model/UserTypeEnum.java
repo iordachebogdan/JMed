@@ -1,5 +1,7 @@
 package model;
 
-public enum UserTypeEnum {
+import java.io.Serializable;
+
+public enum UserTypeEnum implements Serializable {
     MEDIC, PATIENT
 }

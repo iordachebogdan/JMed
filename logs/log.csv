@@ -1,0 +1,75 @@
+timestamp,operation,controller,details,username,status
+Sun May 05 23:27:19 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:27:40 EEST 2019,CREATE,controller.AuthenticationController,User tries to register username=patient1,patient1,OK
+Sun May 05 23:27:52 EEST 2019,CREATE,controller.AuthenticationController,User tries to register username=patient2,patient2,OK
+Sun May 05 23:28:02 EEST 2019,CREATE,controller.AuthenticationController,User tries to register username=medic1,medic1,OK
+Sun May 05 23:28:18 EEST 2019,CREATE,controller.AuthenticationController,User tries to register username=medic2,medic2,OK
+Sun May 05 23:28:21 EEST 2019,INFO,Main,Program finished,,OK
+Sun May 05 23:28:25 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:28:42 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,,NOT_FOUND
+Sun May 05 23:28:55 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,patient1,OK
+Sun May 05 23:28:57 EEST 2019,READ,controller.MedicController,Get all medics,,OK
+Sun May 05 23:29:05 EEST 2019,UPDATE,controller.PatientController,Patient tries to send request to medic with id=3,patient1,OK
+Sun May 05 23:29:13 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,patient2,OK
+Sun May 05 23:29:24 EEST 2019,UPDATE,controller.PatientController,Patient tries to send request to medic with id=2,patient2,NOT_FOUND
+Sun May 05 23:29:28 EEST 2019,UPDATE,controller.PatientController,Patient tries to send request to medic with id=3,patient2,OK
+Sun May 05 23:29:33 EEST 2019,INFO,Main,Program finished,,OK
+Sun May 05 23:29:36 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:29:42 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,medic1,OK
+Sun May 05 23:29:44 EEST 2019,READ,controller.MedicController,Medic tries to read patients ids that requested them,medic1,OK
+Sun May 05 23:29:48 EEST 2019,UPDATE,controller.MedicController,Medic tries to accept request from patient with id=1,medic1,OK
+Sun May 05 23:29:59 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,patient1,OK
+Sun May 05 23:30:01 EEST 2019,CREATE,controller.CaseController,Patient tries to create case,patient1,OK
+Sun May 05 23:30:05 EEST 2019,READ,controller.PatientController,Patient tries to read his data,patient1,OK
+Sun May 05 23:30:05 EEST 2019,READ,controller.PatientController,User tries to read cases ids of patient with id=1,patient1,OK
+Sun May 05 23:30:09 EEST 2019,READ,controller.CaseController,Read case with id=1,patient1,OK
+Sun May 05 23:30:21 EEST 2019,UPDATE,controller.CaseController,Patient tries to add symptom,patient1,OK
+Sun May 05 23:30:27 EEST 2019,READ,controller.CaseController,Read case with id=1,patient1,OK
+Sun May 05 23:30:32 EEST 2019,INFO,Main,Program finished,,OK
+Sun May 05 23:30:36 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:30:48 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,medic2,OK
+Sun May 05 23:30:54 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,medic1,OK
+Sun May 05 23:30:56 EEST 2019,READ,controller.MedicController,Medic tries to read his patients ids,medic1,OK
+Sun May 05 23:30:57 EEST 2019,READ,controller.MedicController,Medic tries to read patients ids that requested them,medic1,OK
+Sun May 05 23:30:59 EEST 2019,READ,controller.MedicController,Medic tries to read his patients ids,medic1,OK
+Sun May 05 23:31:08 EEST 2019,UPDATE,controller.MedicController,Medic tries to accept request from patient with id=5,medic1,NOT_FOUND
+Sun May 05 23:31:16 EEST 2019,READ,controller.MedicController,Medic tries to read his cases ids,medic1,OK
+Sun May 05 23:31:26 EEST 2019,UPDATE,controller.CaseController,Medic tries to add medication,medic1,OK
+Sun May 05 23:31:35 EEST 2019,UPDATE,controller.CaseController,Medic tries to add another medic to case with id=1,medic1,OK
+Sun May 05 23:31:42 EEST 2019,READ,controller.CaseController,Read case with id=1,medic1,OK
+Sun May 05 23:31:56 EEST 2019,READ,controller.MedicController,Medic tries to read his cases ids,medic1,OK
+Sun May 05 23:32:08 EEST 2019,UPDATE,controller.CaseController,Medic tries to add another medic to case with id=1,medic1,OK
+Sun May 05 23:32:16 EEST 2019,UPDATE,controller.CaseController,Medic tries to add another medic to case with id=1,medic1,NOT_FOUND
+Sun May 05 23:32:27 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,medic2,OK
+Sun May 05 23:32:37 EEST 2019,UPDATE,controller.CaseController,Medic tries to add medication,medic2,OK
+Sun May 05 23:32:41 EEST 2019,READ,controller.MedicController,Medic tries to read his cases ids,medic2,OK
+Sun May 05 23:32:44 EEST 2019,READ,controller.CaseController,Read case with id=2,medic2,NOT_FOUND
+Sun May 05 23:32:51 EEST 2019,READ,controller.CaseController,Read case with id=1,medic2,OK
+Sun May 05 23:33:13 EEST 2019,INFO,Main,Program finished,,OK
+Sun May 05 23:33:16 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:33:22 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,patient1,OK
+Sun May 05 23:33:25 EEST 2019,READ,controller.MedicController,Get all medics,,OK
+Sun May 05 23:33:36 EEST 2019,READ,controller.PatientController,Patient tries to read his data,patient1,OK
+Sun May 05 23:33:36 EEST 2019,READ,controller.PatientController,User tries to read cases ids of patient with id=1,patient1,OK
+Sun May 05 23:33:41 EEST 2019,READ,controller.CaseController,Read case with id=1,patient1,OK
+Sun May 05 23:33:58 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,medic1,OK
+Sun May 05 23:34:00 EEST 2019,READ,controller.MedicController,Medic tries to read patients ids that requested them,medic1,OK
+Sun May 05 23:34:03 EEST 2019,INFO,Main,Program finished,,OK
+Sun May 05 23:38:39 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:38:46 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,medic2,OK
+Sun May 05 23:38:55 EEST 2019,UPDATE,controller.CaseController,Medic tries to add another medic to case with id=1,medic2,UNAUTHORIZED
+Sun May 05 23:38:58 EEST 2019,INFO,Main,Program finished,,OK
+Sun May 05 23:40:02 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:40:10 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,patient1,OK
+Sun May 05 23:40:13 EEST 2019,READ,controller.PatientController,Patient tries to read his data,patient1,OK
+Sun May 05 23:40:13 EEST 2019,READ,controller.PatientController,User tries to read cases ids of patient with id=1,patient1,OK
+Sun May 05 23:40:17 EEST 2019,INFO,Main,Program finished,,OK
+Sun May 05 23:41:52 EEST 2019,INFO,Main,Program started,,OK
+Sun May 05 23:42:04 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,patient1,OK
+Sun May 05 23:42:06 EEST 2019,READ,controller.MedicController,Get all medics,,OK
+Sun May 05 23:42:16 EEST 2019,UPDATE,controller.PatientController,Patient tries to send request to medic with id=3,patient1,OK
+Sun May 05 23:42:19 EEST 2019,CREATE,controller.CaseController,Patient tries to create case,patient1,OK
+Sun May 05 23:42:26 EEST 2019,READ,controller.CaseController,Read case with id=2,patient1,OK
+Sun May 05 23:42:38 EEST 2019,AUTHENTICATE,controller.AuthenticationController,User tries to login,medic1,OK
+Sun May 05 23:42:40 EEST 2019,READ,controller.MedicController,Medic tries to read patients ids that requested them,medic1,OK
+Sun May 05 23:42:49 EEST 2019,INFO,Main,Program finished,,OK

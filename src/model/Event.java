@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Event<T> implements Comparable<Event<T>> {
-    public enum EventTypeEnum {
+public class Event<T> implements Comparable<Event<T>>, Serializable {
+    public enum EventTypeEnum implements Serializable {
         ADD, REMOVE
     }
 

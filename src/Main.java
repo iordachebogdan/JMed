@@ -1,110 +1,266 @@
 import controller.*;
 import dataModel.CaseData;
 import dataModel.MedicData;
+import dataModel.PatientData;
 import model.*;
+import service.AuthenticationService;
+import service.LoggingService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) throws NotAuthorizedException, InterruptedException {
+    public static void main(String[] args) {
+        LoggingService.getInstance().log(
+                new LoggingService.LogEntry(LoggingService.Operation.INFO, "Main", "Program started"),
+                null,
+                LoggingService.Status.OK
+        );
+
         AuthenticationController authenticationController = AuthenticationController.getInstance();
         MedicController medicController = MedicController.getInstance();
         PatientController patientController = PatientController.getInstance();
         CaseController caseController = CaseController.getInstance();
 
-        authenticationController.registerUser("P1", "123", "P", "1",
-                "x", "", UserTypeEnum.PATIENT);
-        String token1 = authenticationController.authenticateUser("P1", "123");
+        String[] welcomeMenu = {"1. Login", "2. Register", "3. Quit"};
+        String[] patientMenu = {"1. View medics", "2. Send request to medic", "3. Get personal data", "4. Create case",
+            "5. View case", "6. Add symptom to case", "7. Logout"};
+        String[] medicMenu = {"1. View medics", "2. View patients", "3. View request patients", "4. Accept request", "5. Get cases",
+            "6. View case", "7. Add medication to case", "8. Add another medic to case", "9. Logout"};
 
-        authenticationController.registerUser("P2", "123", "P", "2",
-                "x", "", UserTypeEnum.PATIENT);
-        String token2 = authenticationController.authenticateUser("P2", "123");
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            for (String option : welcomeMenu) {
+                System.out.println(option);
+            }
+            int pick = scanner.nextInt();
+            if (pick == 1) {
+                System.out.print("Enter username: ");
+                String username = scanner.next();
+                System.out.print("Enter password: ");
+                String password = scanner.next();
+                String token;
+                try {
+                    token = authenticationController.authenticateUser(username, password);
+                } catch (Exception ex) {
+                    System.err.println(ex.getMessage());
+                    continue;
+                }
+                UserTypeEnum type = authenticationController.getType(token);
+                if (type == UserTypeEnum.MEDIC) {
+                    while (true) {
+                        for (String option : medicMenu) {
+                            System.out.println(option);
+                        }
+                        int opt = scanner.nextInt();
+                        if (opt == 1) {
+                            List<MedicData> medics;
+                            try {
+                                medics = medicController.getMedics();
+                            } catch(Exception ex) {
+                                System.out.println(ex.getMessage());
+                                continue;
+                            }
+                            for (MedicData medic : medics) {
+                                System.out.println(medic.getId() + "# " + medic.getFirstName() + " " + medic.getLastName());
+                            }
+                        } else if (opt == 2) {
+                            List<Integer> patientIds;
+                            try {
+                                patientIds = medicController.getPatientIds(token);
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println(patientIds);
+                        } else if (opt == 3) {
+                            List<Integer> requestPatientIds;
+                            try {
+                                requestPatientIds = medicController.getRequestPatientIds(token);
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println(requestPatientIds);
+                        } else if (opt == 4) {
+                            System.out.print("Enter patient id: ");
+                            int id = scanner.nextInt();
+                            try {
+                                medicController.acceptRequest(token, id);
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println("ACCEPTED");
+                        } else if (opt == 5) {
+                            List<Integer> caseIds;
+                            try {
+                                caseIds = medicController.getCaseIds(token);
+                            } catch (Exception e) {
+                                System.err.println(e.getMessage());
+                                continue;
+                            }
+                            System.out.println(caseIds);
+                        } else if (opt == 6) {
+                            System.out.print("Enter case id: ");
+                            int id = scanner.nextInt();
+                            CaseData c;
+                            try {
+                                c = caseController.getCaseById(token, id);
+                            } catch (Exception e) {
+                                System.err.println(e.getMessage());
+                                continue;
+                            }
+                            System.out.println(c.getPrescription());
+                            System.out.println(c.getSymptomList());
+                            System.out.println("Patient id: " + c.getPatientId());
+                            System.out.println("Medic id: " + c.getOwnerMedicId());
+                            System.out.println("Other medics ids: " + c.getOtherMedicIds());
+                            System.out.println("Completed: " + c.isCompleted());
+                        } else if (opt == 7) {
+                            System.out.print("Enter case id: ");
+                            int id = scanner.nextInt();
+                            System.out.print("Enter medication name: ");
+                            String medication = scanner.next();
+                            try {
+                                caseController.addMedication(token, id, new Medication(medication, null, null, null));
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println("Added");
+                        } else if (opt == 8) {
+                            System.out.print("Enter case id: ");
+                            int caseId = scanner.nextInt();
+                            System.out.print("Enter other medic id: ");
+                            int medicId = scanner.nextInt();
+                            try {
+                                caseController.addMedic(token, caseId, medicId);
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println("Added");
+                        } else if (opt == 9) {
+                            break;
+                        }
+                    }
+                } else if (type == UserTypeEnum.PATIENT) {
+                    while (true) {
+                        for (String option : patientMenu) {
+                            System.out.println(option);
+                        }
+                        int opt = scanner.nextInt();
+                        if (opt == 1) {
+                            List<MedicData> medics;
+                            try {
+                                medics = medicController.getMedics();
+                            } catch (Exception ex) {
+                                System.out.println(ex.getMessage());
+                                continue;
+                            }
+                            for (MedicData medic : medics) {
+                                System.out.println(medic.getId() + "# " + medic.getFirstName() + " " + medic.getLastName());
+                            }
+                        } else if (opt == 2) {
+                            System.out.print("Enter medic id: ");
+                            int medicId = scanner.nextInt();
+                            try {
+                                patientController.sendPatientRequest(token, medicId);
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println("SENT");
+                        } else if (opt == 3) {
+                            PatientData patientData;
+                            List<Integer> caseIds;
+                            try {
+                                patientData = patientController.getPatientPersonalData(token);
+                                caseIds = patientController.getCaseIds(token, patientData.getId());
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println(patientData.getId() + "# " + patientData.getFirstName() + " " +
+                                    patientData.getLastName() + "\n" + "Case ids: " + caseIds);
+                        } else if (opt == 4) {
+                            CaseData c;
+                            try {
+                                c = caseController.createCase(token);
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println("CREATED with id=" + c.getId());
+                        } else if (opt == 5) {
+                            System.out.print("Enter case id: ");
+                            int id = scanner.nextInt();
+                            CaseData c;
+                            try {
+                                c = caseController.getCaseById(token, id);
+                            } catch (Exception e) {
+                                System.err.println(e.getMessage());
+                                continue;
+                            }
+                            System.out.println(c.getPrescription());
+                            System.out.println(c.getSymptomList());
+                            System.out.println("Patient id: " + c.getPatientId());
+                            System.out.println("Medic id: " + c.getOwnerMedicId());
+                            System.out.println("Other medics ids: " + c.getOtherMedicIds());
+                            System.out.println("Completed: " + c.isCompleted());
+                        } else if (opt == 6) {
+                            System.out.print("Enter case id: ");
+                            int id = scanner.nextInt();
+                            System.out.print("Enter symptom name: ");
+                            String symptom = scanner.next();
+                            try {
+                                caseController.addSymptom(token, id, new Symptom(symptom, null));
+                            } catch (Exception ex) {
+                                System.err.println(ex.getMessage());
+                                continue;
+                            }
+                            System.out.println("Added");
+                        } else if (opt == 7) {
+                            break;
+                        }
+                    }
+                }
+            } else if (pick == 2) {
+                System.out.print("Enter username: ");
+                String username = scanner.next();
+                System.out.print("Enter password: ");
+                String password = scanner.next();
+                System.out.print("Enter first name: ");
+                String firstName = scanner.next();
+                System.out.print("Enter last name: ");
+                String lastName = scanner.next();
+                System.out.print("Enter email: ");
+                String email = scanner.next();
+                System.out.println("Enter bio: ");
+                scanner.nextLine();
+                String bio = scanner.nextLine();
+                System.out.print("Enter type(0 = Patient, 1 = Medic): ");
+                int t = scanner.nextInt();
+                UserTypeEnum type = t == 0 ? UserTypeEnum.PATIENT : UserTypeEnum.MEDIC;
 
-        authenticationController.registerUser("P3", "123", "P", "3",
-                "x", "", UserTypeEnum.PATIENT);
-        String token3 = authenticationController.authenticateUser("P3", "123");
+                try {
+                    authenticationController.registerUser(username, password, firstName, lastName, email, bio, type);
+                } catch (Exception ex) {
+                    System.err.println(ex.getMessage());
+                }
+            } else if (pick == 3) {
+                break;
+            }
+        }
 
-        authenticationController.registerUser("M1", "12", "M", "1",
-                "x", "", UserTypeEnum.MEDIC);
-        String token4 = authenticationController.authenticateUser("M1", "12");
-
-        authenticationController.registerUser("M2", "abc", "M", "2",
-                "x", "", UserTypeEnum.MEDIC);
-        String token5 = authenticationController.authenticateUser("M2", "abc");
-
-        List<MedicData> medics = medicController.getMedics();
-        for (MedicData md : medics)
-            System.out.println(md.getUsername() + " " + md.getId());
-
-        medicController.addSpecialization(token4, new Specialization("cardio"));
-        medicController.addSpecialization(token5, new Specialization("cardio"));
-        medicController.addSpecialization(token5, new Specialization("nefrology"));
-
-        medics = medicController.getMedicsBySpecialization(new Specialization("cardio"));
-        System.out.println(medics.size());
-        medics = medicController.getMedicsBySpecialization(new Specialization("nefrology"));
-        System.out.println(medics.size());
-
-        MedicData md = medicController.getMedicById(5);
-        for (Specialization specialization : md.getSpecializations())
-            System.out.print(specialization.getName() + " ");
-        System.out.println();
-
-        System.out.println(patientController.getPatientPersonalData(token1).getId() + " " +
-                patientController.getPatientPersonalData(token1).getUsername());
-        System.out.println(patientController.getPatientPersonalData(token2).getId() + " " +
-                patientController.getPatientPersonalData(token2).getUsername());
-
-        patientController.sendPatientRequest(token1, 4);
-        patientController.sendPatientRequest(token2, 4);
-
-        System.out.println(medicController.getRequestPatientIds(token4));
-        System.out.println(patientController.getPatientById(3, token4).getUsername());
-
-        medicController.acceptRequest(token4, 2);
-        System.out.println(medicController.getRequestPatientIds(token4));
-        System.out.println(medicController.getPatientIds(token4));
-
-        patientController.sendPatientRequest(token2, 5);
-        medicController.acceptRequest(token5, 2);
-        System.out.println(medicController.getPatientIds(token4));
-        System.out.println(medicController.getPatientIds(token5));
-
-        caseController.createCase(token2);
-        int caseId = patientController.getCaseIds(token5, 2).get(0);
-        CaseData cd = caseController.getCaseById(token5, 1);
-        System.out.println(cd.getPatientId());
-        cd = caseController.getCaseById(token2, 1);
-        System.out.println(cd.getOwnerMedicId());
-
-        System.out.println(medicController.getCaseIds(token5).size());
-        System.out.println(patientController.getCaseIds(token2, 2).size());
-
-        cd = caseController.addMedic(token5, 1, 4);
-        System.out.println(cd.getOtherMedicIds());
-
-        caseController.addSymptom(token2, 1, new Symptom("aaa", new Date()));
-        caseController.addSymptom(token2, 1, new Symptom("bbb", new Date()));
-        Thread.sleep(1000);
-        System.out.println(caseController.getSymptomsBeforeDate(token2, 1, new Date()).size());
-        caseController.removeSymptom(token2, 1,
-                caseController.getCaseById(token2, 1).getSymptomList().get(0));
-        Thread.sleep(1000);
-        System.out.println(caseController.getSymptomsBeforeDate(token2, 1, new Date()).size());
-
-        caseController.addMedication(token4, 1, new Medication("bla", "", new Date(), new Date()));
-        caseController.addMedication(token5, 1, new Medication("bla2", "", new Date(), new Date()));
-
-        cd = caseController.getCaseById(token2, 1);
-        System.out.println(cd.getSymptomList().stream().map(Symptom::getDescription).collect(Collectors.toList()));
-        System.out.println(cd.getPrescription().stream().map(Medication::getName).collect(Collectors.toList()));
-
-        caseController.setCompleted(token5, 1);
-        System.out.println(caseController.getCaseById(token2, 1).isCompleted());
-
-        authenticationController.logOutUser(token1);
-//        patientController.getPatientPersonalData(token1);
+        LoggingService.getInstance().log(
+                new LoggingService.LogEntry(LoggingService.Operation.INFO, "Main", "Program finished"),
+                null,
+                LoggingService.Status.OK
+        );
     }
 }

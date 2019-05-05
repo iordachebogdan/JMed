@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Prescription implements Snapshotable<Medication> {
+public class Prescription implements Snapshotable<Medication>, Serializable {
     private Set<Medication> medicationSet;
     private List<Event<Medication>> events;
 

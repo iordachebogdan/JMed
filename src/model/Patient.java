@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Patient extends User {
+public class Patient extends User implements Serializable {
     private Medic personalMedic;
 
     public Patient(int id, String username, String hashPassword, UserDetails userDetails) {

@@ -13,14 +13,23 @@ public class PatientRequestService {
 
     //singleton pattern
     private PatientRequestService() {
-        requestedMedic = new HashMap<>();
+        requestedMedic = DbService.getInstance().getRequests();
         patientRequests = new HashMap<>();
+        for (Map.Entry<Patient, Medic> entry : requestedMedic.entrySet()) {
+            patientRequests.computeIfAbsent(entry.getValue(), k -> new HashSet<>());
+            patientRequests.get(entry.getValue()).add(entry.getKey());
+        }
     }
 
     public static PatientRequestService getInstance() {
         if (instance == null)
             instance = new PatientRequestService();
         return instance;
+    }
+
+    private void save() {
+        DbService.getInstance()
+                .updateRequests(requestedMedic);
     }
 
     public void patientRequestToMedic(Patient patient, Medic medic) {
@@ -33,6 +42,7 @@ public class PatientRequestService {
         requestedMedic.put(patient, medic);
         patientRequests.computeIfAbsent(medic, k -> new HashSet<>());
         patientRequests.get(medic).add(patient);
+        save();
     }
 
     public void acceptRequest(Patient patient) {
@@ -48,6 +58,7 @@ public class PatientRequestService {
         }
         patient.setPersonalMedic(medic);
         medic.addPatient(patient);
+        save();
     }
 
     public Medic getRequestedMedic(Patient patient) {

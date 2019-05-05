@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Symptom {
+public class Symptom implements Serializable {
     private final String description;
     private final Date firstAppearance;
 
@@ -17,5 +18,10 @@ public class Symptom {
 
     public Date getFirstAppearance() {
         return firstAppearance;
+    }
+
+    @Override
+    public String toString() {
+        return description;
     }
 }

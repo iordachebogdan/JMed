@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Case {
+public class Case implements Serializable {
     private int id;
     private Patient patient;
     private Medic ownerMedic;

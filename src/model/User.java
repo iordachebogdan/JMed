@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class User implements Authenticable {
+public abstract class User implements Authenticable, Serializable {
     private int id;
     private String username;
     private String hashPassword;

@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Medication {
+public class Medication implements Serializable {
     private final String name;
     private final String administration;
     private final Date fromDate;
@@ -29,5 +30,10 @@ public class Medication {
 
     public Date getToDate() {
         return toDate;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

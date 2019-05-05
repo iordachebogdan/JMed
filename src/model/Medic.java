@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Medic extends User {
+public class Medic extends User implements Serializable {
     private List<Specialization> specializations;
     private List<Patient> patients;
 
